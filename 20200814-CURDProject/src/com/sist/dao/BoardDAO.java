@@ -77,7 +77,47 @@ public class BoardDAO {
 		}
 		return list;
 	}
-	// 2. 내용보기  => SELECT (WHERE)
+	// 2. 내용보기  => SELECT (WHERE) ?no=1
+	public BoardVO boardDetail(int no)
+	{
+		BoardVO vo = new BoardVO();
+		try {
+			getConnection();
+			// 1. 조회수 증가
+			String sql="UPDATE freeboard SET hit=hit+1 WHERE no=?";
+			
+			ps=conn.prepareStatement(sql);
+			// 물음표에 값채우기
+			ps.setInt(1, no);
+			
+			// 실행
+			ps.executeUpdate();
+			
+			// 2. 내용볼 데이터를 가지고 온다
+			sql="SELECT no,name,subject,content,regdate,hit FROM freeboard WHERE no=?";
+			ps=conn.prepareStatement(sql);
+			ps.setInt(1, no);
+			
+			ResultSet rs=ps.executeQuery();
+			rs.next();
+			vo.setNo(rs.getInt(1));
+			vo.setName(rs.getString(2));
+			vo.setSubject(rs.getString(3));
+			vo.setContent(rs.getString(4));
+			vo.setRegdate(rs.getDate(5));
+			vo.setHit(rs.getInt(6));
+			
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			
+		} finally {
+			disConnection();
+		}
+		
+		return vo;
+	}
+	
 	// 3. 글쓰기    => INSERT
 	public void boardInsert(BoardVO vo)
 	{

@@ -19,7 +19,7 @@ public class BoardInsert extends HttpServlet {
 	
 	// 폼작업(화면출력)
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// 브라우저에서 실행하는 화면 => HTML
+				// 브라우저에서 실행하는 화면 => HTML
 				// 브라우저에 알림 => HTML문서를 전송할 것이다 
 				response.setContentType("text/html;charset=EUC-KR");
 				// HTML을 브라우저로 전송 시작 
@@ -38,6 +38,7 @@ public class BoardInsert extends HttpServlet {
 				out.println("<div class=row>");
 				
 				// do post 호출 : dopost에 입력한 값을 보내기 
+				// 전송방식 (1) 감춰서 post 보안에 조음(2) 노출해서 get
 				out.println("<form method=post action=BoardInsert>");
 				out.println("<table class=\"table\">");
 				out.println("<tr>");
