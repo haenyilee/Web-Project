@@ -51,8 +51,8 @@ public class EmpDAO {
 			
 			// 쿼리 작성
 			// 왜 아래문장은 오류나지?
-			// String sql="SELECT empno,ename,job,hiredate,TO_CHAR(sal,'$9,999'),emp.deptno,dname,loc FROM emp,dept WHERE emp.deptno=dept.deptno";
-			String sql="SELECT empno,ename,job,hiredate,sal,emp.deptno,dname,loc FROM emp,dept WHERE emp.deptno=dept.deptno";
+			String sql="SELECT empno,ename,job,hiredate,TO_CHAR(sal,'$9,999'),emp.deptno,dname,loc FROM emp,dept WHERE emp.deptno=dept.deptno";
+			// String sql="SELECT empno,ename,job,hiredate,sal,emp.deptno,dname,loc FROM emp,dept WHERE emp.deptno=dept.deptno";
 					// 자바에서는 쿼리 맨 뒤에 ; 작성하면 오류남
 			
 			// 쿼리 전송
@@ -72,7 +72,7 @@ public class EmpDAO {
 				vo.setHiredate(rs.getDate(4));
 				
 				// DeptVO의 객체들에 rs값 담아주기
-				vo.setSal(rs.getInt(5));
+				vo.setSal(rs.getString(5));
 				vo.setDeptno(rs.getInt(6));
 				vo.getDvo().setDname(rs.getString(7));
 				vo.getDvo().setLoc(rs.getString(8));

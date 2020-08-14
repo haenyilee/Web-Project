@@ -10,11 +10,19 @@ public class EmpVO {
 	private String job;
 	private int mgr; // ป็น๘
 	private Date hiredate;
-	private double sal;
+	private String sal;
+	// private double sal;
 	private double comm;
 	private int deptno;
 	
-
+//
+	public String getSal() {
+		return sal;
+	}
+	public void setSal(String sal) {
+		this.sal = sal;
+	}
+//	
 	public int getEmpno() {
 		return empno;
 	}
@@ -45,12 +53,16 @@ public class EmpVO {
 	public void setHiredate(Date hiredate) {
 		this.hiredate = hiredate;
 	}
+	
+	/*
 	public double getSal() {
 		return sal;
 	}
 	public void setSal(double sal) {
 		this.sal = sal;
 	}
+	*/
+	
 	public double getComm() {
 		return comm;
 	}
