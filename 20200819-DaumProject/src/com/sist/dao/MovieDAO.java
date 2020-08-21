@@ -5,6 +5,8 @@ import java.util.*;
 
 import com.sist.manager.MovieVO;
 import com.sist.manager.NewsVO;
+import com.sist.recipe.ChefVO;
+import com.sist.recipe.RecipeVO;
 
 public class MovieDAO {
 	     // 연결 
@@ -101,7 +103,7 @@ public class MovieDAO {
 			ArrayList<MovieVO> list = new ArrayList<MovieVO>();
 			try {
 				getConnection();
-				String sql="SELECT poster,title,no FROM daum_movie WHERE cateno=?";
+				String sql="SELECT poster,title,no FROM daum_movie WHERE cateno=? ORDER BY no";
 				
 				ps=conn.prepareStatement(sql);
 				ps.setInt(1, cno);
@@ -153,6 +155,236 @@ public class MovieDAO {
 			}
 			
 			return list;
+		}
+		
+		// 영화 상세보기 => 영화 1개에 대한 모든 정보
+		public MovieVO movieDetailData(int no)
+		{
+			MovieVO vo=new MovieVO();
+			try {
+				getConnection();
+				String sql="SELECT * FROM daum_movie WHERE no=?";
+				ps=conn.prepareStatement(sql);
+				
+				// 1번째 ?자리에 ps 숫자를 가져와서 vo의 no변수에 넣는다? 
+				ps.setInt(1, no);
+				ResultSet rs=ps.executeQuery();
+				rs.next(); // 데이터가 출력된 위치로 커서 이동 
+				
+				// 커서 이동된 위치에서 데이터 달라고 요청해야함 *줬으니까 데이터 여러개일거임
+				// vo순서 잘 지켜서 값 채워줘야함
+				
+				vo.setNo(rs.getInt(1));
+				vo.setCateno(rs.getInt(2));
+				vo.setTitle(rs.getString(3));
+				vo.setPoster(rs.getString(4));
+				vo.setRegdate(rs.getString(5));
+				vo.setGenre(rs.getString(6));
+				vo.setGrade(rs.getString(7));
+				vo.setActor(rs.getString(8));
+				vo.setScore(rs.getString(9));
+				vo.setDirector(rs.getString(10));
+				vo.setStory(rs.getString(11));
+				vo.setKey(rs.getString(12));
+				
+				rs.close();				
+				
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			} finally {
+				disConnection();
+			}
+			
+			return vo;
+		}
+		
+		// 등록된 댓글 읽어오는 메서드
+		public ArrayList<ReplyVO> movieReplyData(int mno)
+		{
+			ArrayList<ReplyVO> list = new ArrayList<ReplyVO>();
+			
+			try {
+				getConnection();
+				String sql="SELECT no,mno,id,msg,TO_CHAR(regdate,'YYYY-MM-DD HH24:MI:SS') "
+						+ "FROM daum_reply "
+						+ "WHERE mno=? " // 게시물의 댓글은 내용보기에서 나오므로, mno영화번호를 참조해야함
+						+ "ORDER BY no DESC"; // 최신 등록 순으로 출력				
+				
+				ps=conn.prepareStatement(sql);
+				ps.setInt(1, mno);
+				ResultSet rs = ps.executeQuery();
+				while(rs.next())
+				{
+					ReplyVO vo = new ReplyVO();
+					vo.setNo(rs.getInt(1));
+					vo.setMno(rs.getInt(2));
+					vo.setId(rs.getString(3));
+					vo.setMsg(rs.getString(4));
+					vo.setDbday(rs.getString(5));
+					
+					list.add(vo);
+				}
+				rs.close();
+				
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			} finally {
+				disConnection();
+			}
+			
+			return list;
+		}
+		
+		public void movieReplyInsert(ReplyVO vo)
+		{
+			try {
+				getConnection();
+				String sql="INSERT INTO daum_reply VALUES( "
+						+ "(SELECT NVL(MAX(no)+1,1) FROM daum_reply),?,?,?,SYSDATE)";
+				
+				ps=conn.prepareStatement(sql);
+				ps.setInt(1, vo.getMno());
+				ps.setString(2, vo.getId());
+				ps.setString(3, vo.getMsg());
+				
+				ps.executeUpdate();
+				
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			} finally {
+				disConnection();
+			}
+		}
+		
+		public void recipeInsert(RecipeVO vo) {
+			try {
+				getConnection();
+				String sql="INSERT INTO recipe VALUES("
+						+ "(SELECT NVL(MAX(no)+1,1) FROM recipe),?,?,?,?)";
+				
+				ps=conn.prepareStatement(sql);
+				ps.setString(1, vo.getTitle());
+				ps.setString(2, vo.getPoster());
+				ps.setString(3, vo.getChef());
+				ps.setString(4, vo.getLink());
+				
+				ps.executeUpdate();
+			
+			} 
+			catch (Exception e) {
+				System.out.println(e.getMessage());
+			} 
+			finally {
+				disConnection();
+			}
+		}
+		
+		public void chefInsert(ChefVO vo) {
+			try {
+				getConnection();
+				String sql="INSERT INTO chef VALUES(?,?,?,?,?,?)";
+				
+				ps=conn.prepareStatement(sql);
+				ps.setString(1, vo.getPoster());
+				ps.setString(2, vo.getChef());
+				ps.setString(3, vo.getMem_cont1());
+				ps.setString(4, vo.getMem_cont3());
+				ps.setString(5, vo.getMem_cont7());
+				ps.setString(6, vo.getMem_cont2());
+				
+				ps.executeUpdate();
+			
+			} 
+			catch (Exception e) {
+				System.out.println(e.getMessage());
+			} 
+			finally {
+				disConnection();
+			}
+		}
+		
+		
+		// 로그인
+		/*
+		 *  목록 => arraylist
+		 *  상세보기 => vo
+		 *  경우의 수 =>
+		 *  	- 2개 : boolean
+		 *  		(ID중복체크)
+		 *  	- 3개 이상 : String , int
+		 *  		(ID없는 경우 , PWD틀린 경우 , 로그인 성공)
+		 */
+		
+		public String isLogin(String id,String pwd)
+		{
+			String result="";
+			try {
+				getConnection();
+				
+				// ID 존재하냐?
+				String sql="SELECT COUNT(*) FROM member "
+						+ "WHERE id=?";
+				
+				ps=conn.prepareStatement(sql);
+				ps.setString(1, id);
+				ResultSet rs= ps.executeQuery();
+				rs.next();
+				int count=rs.getInt(1);
+				rs.close();
+				
+				
+				if(count==0) // id가 없는 상태
+				{
+					result="NOID";
+				}
+				else // ID가 존재하는 상태
+				{
+					sql="SELECT pwd FROM member WHERE id=?";
+					ps=conn.prepareStatement(sql);
+					ps.setString(1, id);
+					rs= ps.executeQuery();
+					rs.next();
+					String db_pwd=rs.getString(1);
+					rs.close();
+					
+					// PWD일치하냐?
+					if(db_pwd.equals(pwd))
+					{
+						result="OK";
+					}
+					else
+					{
+						result="NOPWD";
+					}
+					
+				}
+				
+				
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			} finally {
+				disConnection();
+			}
+			return result;
+		}
+		
+		public void replyDelete(int no)
+		{
+			try {
+				getConnection();
+				String sql="DELETE FROM daum_reply "
+						+ "WHERE no=?";
+				ps=conn.prepareStatement(sql);
+				ps.setInt(1,no);
+				
+				ps.executeUpdate();
+				
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				disConnection();
+			}
 		}
 		
 }

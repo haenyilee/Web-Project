@@ -26,6 +26,14 @@ public class NewsMain extends HttpServlet {
 		out.println("<html>");
 		out.println("<head>");
 		out.println("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css\">");
+		out.println("<style type=text/css>");
+		out.println(".row{");
+		out.println("margin:0px auto;");
+		out.println("width:700px;");
+		out.println("}");
+		
+		out.println("</style>");
+
 		out.println("</head>");
 		out.println("<body>");
 		
