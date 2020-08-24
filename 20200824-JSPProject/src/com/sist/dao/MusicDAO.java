@@ -10,7 +10,7 @@ public class MusicDAO {
 	private Connection conn;
 	private PreparedStatement ps;
 	
-	private final String URL="jdbc:oracle:thin:@localohost:1521:XE";
+	private final String URL="jdbc:oracle:thin:@localhost:1521:XE";
 	
 	public MusicDAO()
 	{

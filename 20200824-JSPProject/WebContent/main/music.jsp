@@ -33,6 +33,7 @@ $(function(){
 					<input type=text id=keyword size=25>
 				</td>
 			</tr>
+		</table>
 		<table border=1 width=800 id="user-table">
 			<tr>
 				<th>순위</th>
