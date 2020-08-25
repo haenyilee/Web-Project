@@ -23,32 +23,12 @@
 	<h1>구구단</h1>
 	<table width=560 border="1">
 	  <tr>
-		<% 
-		  for(int i=2;i<=9;i++)
-		  {
-		%>	
-				<th><%= i+"?? %></th>
-		<%		
-		  }
-		%>
-	  </tr>
-	  <%
-			  for(int j=2;j<=9;j++)
-			  {
-			
-		 		<td><%= j+"*"+i+"="+j*i %></td>	
-		<%				  
-			  }
-		%>	
-		</tr>	  
-		<%			  
-		  }
-		%>			
-
 		<td>
-			
-		</td>
+		for(int j=2;j<=9;j++)
+		j*i=j*i
 		
+		
+		</td>
 	 </tr>
 	</table>
 	</center>

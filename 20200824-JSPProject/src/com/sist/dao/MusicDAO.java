@@ -63,12 +63,27 @@ public class MusicDAO {
 	}
 	
 	
-	public ArrayList<DaumMovieVO> daumMovieAllData(){
+	public ArrayList<DaumMovieVO> daumMovieAllData(int page){
 		ArrayList<DaumMovieVO> list = new ArrayList<DaumMovieVO>();
 		try {
 			getConnection();
-			String sql="SELECT no,title,poster,actor,score,director FROM daum_movie WHERE cateno=1 ORDER BY no";
+			int rowSize=10;
+			int start=rowSize*(page-1)+1;
+			int end=rowSize*page;
+			System.out.println(start);
+			System.out.println(end);
+			String sql="SELECT no,title,poster,actor,score,director,num "
+					+ "FROM (SELECT no,title,poster,actor,score,director,rownum as num "
+					+ "FROM (SELECT no,title,poster,actor,score,director "
+					+ "FROM daum_movie "
+					+ "WHERE cateno=1 "
+					+ "ORDER BY no DESC)) "
+					+ "WHERE num BETWEEN ? AND ?";
+			
 			ps=conn.prepareStatement(sql);
+			ps.setInt(1, start);
+			ps.setInt(2, end);
+			
 			ResultSet rs=ps.executeQuery();
 			while(rs.next())
 			{
@@ -91,6 +106,27 @@ public class MusicDAO {
 		}
 		
 		return list;
+	}
+	
+	public int daumMovieTotalPage() 
+	{
+		int total=0;
+		try {
+			getConnection();
+			String sql="SELECT CEIL(COUNT(*)/10.0) FROM daum_movie WHERE cateno=1";
+			
+			ps=conn.prepareStatement(sql);
+			ResultSet rs=ps.executeQuery();
+			rs.next();
+			total=rs.getInt(1);
+			rs.close();
+			
+		} catch (Exception e) {
+			e.getMessage();
+		} finally {
+			disConnection();
+		}
+		return total;
 	}
 	
 }

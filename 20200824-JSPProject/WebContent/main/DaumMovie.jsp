@@ -3,8 +3,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
+	String strPage = request.getParameter("page");
+	if(strPage==null)
+	{
+		strPage="1";
+	}
+
 	MusicDAO dao= new MusicDAO();
-	ArrayList<DaumMovieVO> list = dao.daumMovieAllData();
+	int curpage=Integer.parseInt(strPage);
+	
+	int totalpage=dao.daumMovieTotalPage();
+	ArrayList<DaumMovieVO> list = dao.daumMovieAllData(curpage);
+	
 %>
 <!DOCTYPE html>
 <html>
@@ -42,6 +52,16 @@
 	<% 
 	} 
 	%>
+	<table border=1 width=1300>
+		<tr>
+			<td align=left></td>
+			<td align=right>
+				<a href="DaumMovie.jsp?page=<%=curpage>1?curpage-1:curpage %>">이전</a>
+				<%=curpage %> / <%=totalpage %> pages
+				<a href="DaumMovie.jsp?page=<%=curpage<=totalpage?curpage+1:curpage %>">다음</a>
+			</td>
+		</tr>
+	</table>
 
 </table>
 </center>
