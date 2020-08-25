@@ -143,10 +143,32 @@ public class BoardDAO {
 		} finally {
 			disConnection();
 		}
-		
-		
-		
+
 		return vo;
+	}
+	
+	public void boardInsert(BoardVO vo)
+	{
+		try {
+			getConnection();
+			
+			// SQL컬럼에 맞게 순서대로 값 넣어주기			
+			String sql="INSERT INTO jsp_board VALUES("
+					+ "jb_no_seq.nextval,?,?,?,?,SYSDATE,0)";
+			ps=conn.prepareStatement(sql);
+			ps.setString(1, vo.getName());
+			ps.setString(2, vo.getSubject());
+			ps.setString(3, vo.getContent());
+			ps.setString(4, vo.getPwd());
+			
+			ps.executeUpdate();
+			
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		} finally {
+			disConnection();
+		}
 	}
 	
 

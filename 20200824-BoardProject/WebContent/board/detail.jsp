@@ -46,7 +46,9 @@
 			
 			<tr>
 				<th width=20%>내용</th>
-				<td colspan="4" height="500" valign="top"><%=vo.getContent() %></td>
+				
+				<%-- <pre>를 안붙여주면 한 줄씩밖에 인식을 못함 --%>
+				<td colspan="4" height="500" valign="top"><pre><%=vo.getContent() %></pre></td>
 			</tr>
 			
 			<tr>

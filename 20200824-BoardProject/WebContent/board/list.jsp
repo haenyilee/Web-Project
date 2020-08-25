@@ -33,6 +33,13 @@
 	<h1>게시판</h1>
 	<table class="table_content" width=1300>
 		<tr>
+			<td>
+				<a href="insert.jsp">새글</a>
+			</td>
+		</tr>
+		
+	<table class="table_content" width=1300>
+		<tr>
 			<th>번호</th>
 			<th>제목</th>
 			<th>글쓴이</th>
