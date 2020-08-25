@@ -34,6 +34,7 @@ public class BoardDAO {
 		}
 	}
 	
+	// 목록보기
 	public ArrayList<BoardVO> boardAllData(int page){
 		ArrayList<BoardVO> list = new ArrayList<BoardVO>();
 		try {
@@ -100,6 +101,52 @@ public class BoardDAO {
 			disConnection();
 		}
 		return total;
+	}
+	
+	
+	// 내용보기
+	public BoardVO boardDetailData(int no)
+	{
+		BoardVO vo = new BoardVO();
+		try {
+			getConnection();
+			// 내용 보면 조회수 증가시키기
+			String sql="UPDATE jsp_board SET "
+					+ "hit=hit+1 "
+					+ "WHERE no=?";
+			
+			ps=conn.prepareStatement(sql);
+			ps.setInt(1, no);
+			ps.executeUpdate();
+			
+			// 내용보기 데이터 읽기
+			sql="SELECT no,name,subject,content,regdate,hit "
+					+ "FROM jsp_board "
+					+ "WHERE no=?";
+			
+			ps=conn.prepareStatement(sql);
+			ps.setInt(1, no);
+			
+			ResultSet rs=ps.executeQuery();
+			rs.next();
+			
+			vo.setNo(rs.getInt(1));
+			vo.setName(rs.getString(2));
+			vo.setSubject(rs.getString(3));
+			vo.setContent(rs.getString(4));
+			vo.setRegdate(rs.getDate(5));
+			vo.setHit(rs.getInt(6));
+			
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		} finally {
+			disConnection();
+		}
+		
+		
+		
+		return vo;
 	}
 	
 

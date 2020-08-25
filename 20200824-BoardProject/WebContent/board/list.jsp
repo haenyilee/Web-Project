@@ -1,8 +1,7 @@
-<%@page import="com.sist.dao.BoardVO"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="com.sist.dao.BoardDAO"%>
+<%@page import="com.sist.dao.*"%>
+<%@page import="java.util.*"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8" import="java.text.*"%>
     
 <%
 	String strPage = request.getParameter("page");
@@ -48,7 +47,23 @@
 		%>	
 			<tr class="dataTr">
 				<td width=10% class="tdcenter"><%=vo.getNo() %></td>
-				<td width=45% class="tdcenter"><%=vo.getSubject() %></td>
+				<td width=45% class="tdcenter">
+					<%-- Subject를 클릭하면 No값을 보내준다.... --%>
+					<a href="detail.jsp?no=<%= vo.getNo()%>"><%=vo.getSubject() %></a>
+					<% 
+						Date date=new Date();
+						SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+						String today=sdf.format(date);	
+						if(today.equals(vo.getRegdate().toString()))
+						{
+					%>	
+							<font color=red><sup>new</sup></font>
+					<% 	
+						}
+					%>
+					
+				</td>
+				
 				<td width=15% class="tdcenter"><%=vo.getName() %></td>
 				<td width=20% class="tdcenter"><%=vo.getRegdate() %></td>
 				<td width=10% class="tdcenter"><%=vo.getHit() %></td>													
