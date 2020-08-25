@@ -2,6 +2,17 @@
 <%@page import="java.util.*"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    <%-- 
+    
+    page 매개변수는 아래  
+    	<a href="DaumMovie.jsp?page=<%=curpage>1?curpage-1:curpage %>">
+	에서 page= 뒤의 값을 받아오는 것이다~!!!!!! 
+	첫 페이지를 딱 들어가게 되면 클릭한 것이 없으니 page값을 받을 수가 없다.
+	그래서 page가 없으니 strPage도 당연히 없고, 이때는 페이지가 1이다 라고 명시해줘야한다!
+	
+	--%>
+
+
 <%
 	String strPage = request.getParameter("page");
 	if(strPage==null)
