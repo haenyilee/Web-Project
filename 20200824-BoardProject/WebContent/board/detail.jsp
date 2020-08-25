@@ -53,7 +53,7 @@
 			
 			<tr>
 				<td colspan=4 align=right>
-					<a href="#">수정</a>&nbsp;
+					<a href="update.jsp?no=<%=vo.getNo()%>">수정</a>&nbsp;
 					<a href="#">삭제</a>&nbsp;
 					<a href="list.jsp">목록</a>&nbsp;
 				</td>

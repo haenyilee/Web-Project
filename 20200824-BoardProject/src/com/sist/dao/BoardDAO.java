@@ -171,5 +171,84 @@ public class BoardDAO {
 		}
 	}
 	
+	// 수정하기
+	public BoardVO boardUpdateData(int no)
+	{
+		BoardVO vo = new BoardVO();
+		try {
+			getConnection();
+			// 수정하기 클릭하면 아래 데이터 가져오기
+			String sql="SELECT no,name,subject,content,regdate,hit "
+					+ "FROM jsp_board "
+					+ "WHERE no=?";
+			
+			ps=conn.prepareStatement(sql);
+			ps.setInt(1, no);
+			
+			ResultSet rs=ps.executeQuery();
+			rs.next();
+			
+			vo.setNo(rs.getInt(1));
+			vo.setName(rs.getString(2));
+			vo.setSubject(rs.getString(3));
+			vo.setContent(rs.getString(4));
+			vo.setRegdate(rs.getDate(5));
+			vo.setHit(rs.getInt(6));
+			
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		} finally {
+			disConnection();
+		}
+
+		return vo;
+	}
+	
+	// 수정
+	public boolean boardUpdate(BoardVO vo)
+	{
+		boolean bCHeck = false;
+		try {
+			getConnection();
+			String sql="SELECT pwd FROM jsp_board "
+					+ "WHERE no=?";
+			
+			ps=conn.prepareStatement(sql);
+			ps.setInt(1, vo.getNo());
+			ResultSet rs = ps.executeQuery();
+			rs.next();
+			
+			// 비밀번호가 일치하는지 확인하기
+			String db_pwd=rs.getString(1);
+			rs.close();
+			
+			if(db_pwd.equals(vo.getPwd()))
+			{
+				// 비번 맞으면 내용 수정 후, 상세페이지로 이동
+				bCHeck=true;
+				sql="UPDATE jsp_board SET "
+						+ "name=?,subject=?,content=? "
+						+ "WHERE no=?";
+				ps=conn.prepareStatement(sql);
+				ps.setString(1, vo.getName());
+				ps.setString(2, vo.getSubject());
+				ps.setString(3, vo.getContent());
+				ps.setInt(4, vo.getNo());
+				
+				ps.executeUpdate();
+			}
+			else
+			{
+				// 비번 틀리면 수정하기 창 그대로 유지
+				bCHeck=false;
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		} finally {
+			disConnection();
+		}
+		return bCHeck;
+	}
 
 }
