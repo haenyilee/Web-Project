@@ -5,8 +5,21 @@
     pageEncoding="UTF-8"%>
     
 <%
+	String strPage = request.getParameter("page");
+	if(strPage==null)
+		strPage="1";
+	/*
+		request VS response
+		: https://github.com/haenyilee/HTML_Basic/wiki/JSP_request-VS-response
+	*/
+
+
+
 	BoardDAO dao = new BoardDAO();
-	ArrayList<BoardVO> list = dao.boardAllData();
+	int curpage=Integer.parseInt(strPage);
+	//curpage=1;
+	int totalpage=dao.boardTotalPage();
+	ArrayList<BoardVO> list = dao.boardAllData(curpage);
 %>
     
 <!DOCTYPE html>
@@ -14,11 +27,12 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<link rel="stylesheet" href="table.css">
 </head>
 <body>
 	<center>
 	<h1>게시판</h1>
-	<table border=1 width=1300>
+	<table class="table_content" width=1300>
 		<tr>
 			<th>번호</th>
 			<th>제목</th>
@@ -32,18 +46,29 @@
 		  for(BoardVO vo:list)
 		  {
 		%>	
-			<tr>
-				<td><%=vo.getNo() %></td>
-				<td><%=vo.getSubject() %></td>
-				<td><%=vo.getName() %></td>
-				<td><%=vo.getRegdate() %></td>
-				<td><%=vo.getHit() %></td>													
+			<tr class="dataTr">
+				<td width=10% class="tdcenter"><%=vo.getNo() %></td>
+				<td width=45% class="tdcenter"><%=vo.getSubject() %></td>
+				<td width=15% class="tdcenter"><%=vo.getName() %></td>
+				<td width=20% class="tdcenter"><%=vo.getRegdate() %></td>
+				<td width=10% class="tdcenter"><%=vo.getHit() %></td>													
 			</tr>
 		<%		  
 		  }
 		%>
 
 	</table>
+	<table class="table_content" width=1300>
+		<tr>
+        <td align=left></td>
+        <td align="right">
+				<a href="list.jsp?page=<%=curpage>1?curpage-1:curpage %>">이전</a>
+				<%=curpage %> page / <%=totalpage %> pages
+				<a href="list.jsp?page=<%=curpage<totalpage?curpage+1:curpage %>">다음</a>
+		</td>
+		</tr>
+	</table>
+	
 	</center>
 
 </body>

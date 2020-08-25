@@ -34,12 +34,29 @@ public class BoardDAO {
 		}
 	}
 	
-	public ArrayList<BoardVO> boardAllData(){
+	public ArrayList<BoardVO> boardAllData(int page){
 		ArrayList<BoardVO> list = new ArrayList<BoardVO>();
 		try {
 			getConnection();
-			String sql="SELECT no,subject,name,regdate,hit FROM jsp_board ORDER BY no DESC"; 
+			
+			// 한 페이지를 10개로 나누겠다!
+			int rowSize=5;
+			// SQL쿼리문장에서 : ~ BETWEEN start AND end ~
+			// int start = (page*rowSize)-(rowSize-1);
+			int start = rowSize*(page-1) + 1;
+	
+			int end = page * rowSize;
+			
+			String sql="SELECT no,subject,name,regdate,hit,num "
+					+ "FROM (SELECT no,subject,name,regdate,hit,rownum as num "
+					+ "FROM (SELECT no,subject,name,regdate,hit "
+					+ "FROM jsp_board ORDER BY no DESC)) "
+					+ "WHERE num BETWEEN ? AND ?"; 
+			
 			ps=conn.prepareStatement(sql);
+			ps.setInt(1, start);
+			ps.setInt(2, end);
+			
 			ResultSet rs=ps.executeQuery();
 			while(rs.next())
 			{
@@ -61,6 +78,28 @@ public class BoardDAO {
 		
 		return list;
 		
+	}
+	
+	
+	// 총 페이지 가져오기
+	public int boardTotalPage()
+	{
+		int total=0;
+		try {
+			getConnection();
+			String sql="SELECT CEIL(COUNT(*)/5.0) FROM jsp_board";
+			ps=conn.prepareStatement(sql);
+			ResultSet rs=ps.executeQuery();
+			rs.next();
+			total=rs.getInt(1);
+			rs.close();
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		} finally {
+			disConnection();
+		}
+		return total;
 	}
 	
 
